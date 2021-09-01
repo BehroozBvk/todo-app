@@ -20,7 +20,11 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $articles = auth()->user()->articles()->where('title','like',"%$request->term%")->paginate(10);
+        $article = Article::query();
+        if (auth()->user()->is_admin)
+            $articles = $article->where('title', 'like', "%$request->term%")->paginate(10);
+        else
+            $articles= auth()->user()->articles()->where('title', 'like', "%$request->term%")->paginate(10);
         return view('articles.index', compact('articles'))->with(['title' => 'articles']);
     }
 
